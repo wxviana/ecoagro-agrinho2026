@@ -1,0 +1,91 @@
+// Variáveis globais com nomes descritivos (boa prática pontuada no concurso)
+let producao = 50;
+let meioAmbiente = 50;
+
+// Elementos do DOM guardados em variáveis
+const textoHistoria = document.getElementById("texto-historia");
+const botoesOpcoes = document.getElementById("botoes-opcoes");
+const elementoProd = document.getElementById("prod-pontos");
+const elementoAmb = document.getElementById("amb-pontos");
+
+function atualizarPlacar() {
+    elementoProd.innerText = producao;
+    elementoAmb.innerText = meioAmbiente;
+    
+    // Validação de fim de jogo por extremos
+    if (meioAmbiente <= 20) {
+        finalizarJogo("Fim de Jogo! O uso excessivo de recursos destruiu o ecossistema local. A fazenda faliu devido à seca extrema.");
+    } else if (producao <= 20) {
+        finalizarJogo("Fim de Jogo! A produção caiu tanto que a fazenda não conseguiu se pagar. Faltou alimento para a região.");
+    }
+}
+
+function iniciarJogo() {
+    producao = 50;
+    meioAmbiente = 50;
+    atualizarPlacar();
+    fase1();
+}
+
+function fase1() {
+    textoHistoria.innerText = "Fase 1: Chegou a época do plantio. Para combater as pragas que ameaçam a safra deste ano, o que você decide fazer?";
+    
+    botoesOpcoes.innerHTML = `
+        <button class="btn" onclick="escolhaFase1(1)">Aplicar defensivos químicos potentes e rápidos</button>
+        <button class="btn" onclick="escolhaFase1(2)">Implementar o Manejo Integrado de Pragas (MIP) usando predadores naturais</button>
+    `;
+}
+
+function escolhaFase1(opcao) {
+    if (opcao === 1) {
+        producao += 20;
+        meioAmbiente -= 20;
+        textoHistoria.innerText = "A produção disparou temporariamente, mas os rios locais começaram a registrar contaminação.";
+    } else {
+        producao += 5;
+        meioAmbiente += 15;
+        textoHistoria.innerText = "O processo foi mais lento, porém a fauna local foi preservada e o solo ganhou nutrientes.";
+    }
+    atualizarPlacar();
+    
+    if (meioAmbiente > 20 && producao > 20) {
+        setTimeout(fase2, 3500); // Avança após 3.5 segundos para o jogador ler o resultado
+    }
+}
+
+function fase2() {
+    textoHistoria.innerText = "Fase 2: A fazenda precisa expandir a área de cultivo. Qual será a sua estratégia de expansão?";
+    
+    botoesOpcoes.innerHTML = `
+        <button class="btn" onclick="escolhaFase2(1)">Desmatar uma área de reserva legal para plantar mais soja rápido</button>
+        <button class="btn" onclick="escolhaFase2(2)">Adotar a ILPF (Integração Lavoura-Pecuária-Floresta) em áreas já degradadas</button>
+    `;
+}
+
+function escolhaFase2(opcao) {
+    if (opcao === 1) {
+        producao += 25;
+        meioAmbiente -= 25;
+    } else {
+        producao += 15;
+        meioAmbiente += 15;
+    }
+    atualizarPlacar();
+    
+    if (meioAmbiente > 20 && producao > 20) {
+        verificarVitoria();
+    }
+}
+
+function verificarVitoria() {
+    if (producao >= 65 && meioAmbiente >= 65) {
+        finalizarJogo(`🏆 Vitória Perfeita! Você alcançou o verdadeiro equilíbrio! Produção está em ${producao}% e o Meio Ambiente em ${meioAmbiente}%. O agro é forte e sustentável!`);
+    } else {
+        finalizarJogo(`Fim da Temporada! Você sobreviveu, mas não alcançou a harmonia ideal. Produção: ${producao}% | Meio Ambiente: ${meioAmbiente}%. Tente equilibrar mais as suas escolhas na próxima vez.`);
+    }
+}
+
+function finalizarJogo(mensagem) {
+    textoHistoria.innerText = mensaje || mensagem;
+    botoesOpcoes.innerHTML = `<button class="btn" onclick="iniciarJogo()">Jogar Novamente</button>`;
+}
